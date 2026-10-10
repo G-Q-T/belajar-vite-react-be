@@ -46,15 +46,16 @@ export const getAllUser = async (req,res) => {
 
 // update
 export const getUserBYId = async(req,res) =>{
+    const id = parseInt(req.params.id);
     try {
-        const id = parseInt(req.params.id);
-        const [user] = await pool.query("SELECT id,nama,email,is_active FROM users where id = ?",[id]);
-    
+        const [rows] = await pool.query("SELECT id,nama,email,is_active FROM users where id = ?",[id]);
+        const user = rows[0];   
         // const user = USERS.find((u)=> u.id === id);
         if (!user) {
-            res.status(404).json({
+            return res.status(404).json({
                 status:false,
                 message:"data tidak ditemukan WOK",
+                error:error.message,
             });
         }
         res.status(200).json({
@@ -89,7 +90,7 @@ export const createUser = async(req,res) =>{
         status:false,
         message:"gagal",
         data:error.message
-    })     
+    });   
     }
 };
 
